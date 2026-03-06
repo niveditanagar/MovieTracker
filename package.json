@@ -1,0 +1,16 @@
+{
+  "name": "movietrackerapi",
+  "version": "1.0.0",
+  "description": "A full-stack application that allows the user to search up a movie and add it to a list ( watched, watching, watch list). User can also give a movie a rating out of 10 and move the movie in-between lists.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
