@@ -48,14 +48,14 @@ function Watchlist() {
         }
     }
 
-    // const handleAdd = async (imdbID) => {
-    //     try {
-    //         await axios.post('http://localhost3000/movies/watchlist', { imdbID });
-    //         console.log('Movie added: ', imdbID);
-    //     } catch (err) {
-    //         setError(err.response?.data?.manage || 'Could not add movie.');
-    //     }
-    // };
+    const handleAdd = async (imdbID) => {
+        try {
+          const res = await axios.post('http://localhost:3000/movies/watchlist', { imdbID });
+          console.log("response:", res);
+        } catch (error) {
+            console.error(error); 
+        }
+    };
 
     // useEffect(() => {
     //     const fetchMovies = async () => {
@@ -87,8 +87,8 @@ function Watchlist() {
 
             <div>
                 <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
-                {searchResults.map((movie) => (
-                <li key={movie.imdbID}>
+                {searchResults.map((movie, index) => (
+                <li key={movie.imdbID || index}>
                     {movie.Title} ({movie.Year})
                 <button onClick={() => handleAdd(movie.imdbID)}>Add</button>
                 </li>
