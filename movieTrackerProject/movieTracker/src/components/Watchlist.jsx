@@ -10,27 +10,6 @@ function Watchlist() {
     const [watchlist, setWatchlist] = useState([]); // Stores watchlist movies
     const [view, setView] = useState('search'); // 'search' or 'watchlist'
 
-    //Save searchResults to localStorage whenever it changes
-    //  useEffect(() => {
-    //     localStorage.setItem('searchResults', JSON.stringify(searchResults));
-    // }, [searchResults]);
-
-    // // Load searchResults from localStorage on component mount
-    // useEffect(() => {
-    //     const savedResults = localStorage.getItem('searchResults');
-    //     console.log('Loading from localStorage: ', savedResults);
-    //     if (savedResults) {
-    //         try {
-    //             const parsedResults = JSON.parse(savedResults);
-    //             console.log('Parsed results: ', parsedResults);
-    //             setSearchResults(parsedResults);
-    //         } catch (error) {
-    //             console.error('Error parsing localStorage data: ', error);
-    //         }
-    //     }
-    // }, []);
-
-
     const fetchWachList = async () => {
         try {
             const res = await axios.get('http://localhost:3000/movies');
@@ -66,15 +45,32 @@ function Watchlist() {
         }
     }
 
+        const handleWatched = async (imdbID) => {
+        try {
+            const res = await axios.patch(`http://localhost:3000/movies/watched/${imdbID}`)
+            console.log("handle watched: ", res.data)
+            const updatedMovie = res.data.updatedMovie;
+            // Update local state to reflect the change
+            setWatchlist(prev => prev.map(movie =>
+                movie.imdbID === imdbID ? updatedMovie : movie
+            ));
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const handleAdd = async (imdbID) => {
         try {
             const res = await axios.post('http://localhost:3000/movies/watchlist', { imdbID });
+            //const newMovie = res.data.newMoive;
             console.log("Movie added:", res.data);
-            setWatchlist(prev => [...prev, res.data.movie || res.data]);
+            await fetchWachList();
+            //setWatchlist(prev => [...prev, newMovie]);
         } catch (error) {
             console.error(error);
         }
     };
+
 
     return (
 
@@ -89,7 +85,7 @@ function Watchlist() {
 
             <div>
                 <button onClick={() => setView('watchlist')}>WATCHLIST</button>
-                <button>WATCHED</button>
+                <button onClick={() => setView('watched')}>WATCHED</button>
             </div>
 
             <div>
@@ -98,6 +94,22 @@ function Watchlist() {
                         <h2>Saved Watchlist</h2>
                         <ul>
                             {watchlist.map((movie) => (
+                                <li key={movie.imdbID}>
+                                    {movie.title} ({movie.year})
+                                    {!movie.watched && (
+                                        <button onClick={() => handleWatched(movie.imdbID)}>
+                                            Mark as Watched
+                                        </button>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ) : view === 'watched' ? (
+                    <div>
+                        <h2>Watched Movies</h2>
+                        <ul>
+                            {watchlist.filter(movie => movie.watched).map((movie) => (
                                 <li key={movie.imdbID}>
                                     {movie.title} ({movie.year})
                                 </li>
