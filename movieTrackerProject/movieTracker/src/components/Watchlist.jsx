@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import './watchlist.css';
 
 function Watchlist() {
 
@@ -8,7 +9,7 @@ function Watchlist() {
     const [loading, setLoading] = useState(false); // For loading state
     const [error, setError] = useState(''); // For error messages 
     const [watchlist, setWatchlist] = useState([]); // Stores watchlist movies
-    const [view, setView] = useState('search'); // 'search' or 'watchlist'
+    const [view, setView] = useState('watchlist'); // 'search' or 'watchlist'
 
     const fetchWachList = async () => {
         try {
@@ -22,7 +23,6 @@ function Watchlist() {
     useEffect(() => {
         fetchWachList();
     }, []);
-
 
     const handleSearch = async () => {
         if (!searchTitle.trim()) {
@@ -62,10 +62,8 @@ function Watchlist() {
     const handleAdd = async (imdbID) => {
         try {
             const res = await axios.post('http://localhost:3000/movies/watchlist', { imdbID });
-            //const newMovie = res.data.newMoive;
             console.log("Movie added:", res.data);
             await fetchWachList();
-            //setWatchlist(prev => [...prev, newMovie]);
         } catch (error) {
             console.error(error);
         }
@@ -84,16 +82,18 @@ function Watchlist() {
             </button>
 
             <div>
-                <button onClick={() => setView('watchlist')}>WATCHLIST</button>
-                <button onClick={() => setView('watched')}>WATCHED</button>
+                <button className={`watchlistBtn ${view === 'watchlist' ? 'active' : ''}`}  onClick={() => setView('watchlist')}>WATCHLIST</button>
+                <button className={`watchedBtn ${view === 'watched' ? 'active' : ''}`} onClick={() => setView('watched')}>WATCHED</button>
             </div>
 
             <div>
                 {view === 'watchlist' ? (
                     <div>
                         <h2>Saved Watchlist</h2>
-                        <ul>
-                            {watchlist.map((movie) => (
+                        <ul className='list'>
+                            {watchlist
+                            .filter((movie) => movie.watched === false)
+                            .map((movie) => (
                                 <li key={movie.imdbID}>
                                     {movie.title} ({movie.year})
                                     {!movie.watched && (
@@ -108,7 +108,7 @@ function Watchlist() {
                 ) : view === 'watched' ? (
                     <div>
                         <h2>Watched Movies</h2>
-                        <ul>
+                        <ul className='list'>
                             {watchlist.filter(movie => movie.watched).map((movie) => (
                                 <li key={movie.imdbID}>
                                     {movie.title} ({movie.year})
@@ -118,7 +118,7 @@ function Watchlist() {
                     </div>
                 ) : (
                     <div>
-                        <ul>
+                        <ul className='list'>
                             {searchResults.map((movie) => (
                                 <li key={movie.imdbID}>
                                     {movie.Title} ({movie.Year})

@@ -1,0 +1,25 @@
+.watchlistBtn.active,
+.watchedBtn.active {
+    background-color: #4CAF50; /* Or any color you prefer */
+    color: white;
+    font-weight: bold;
+    border: 2px solid #45a049;
+}
+
+.watchlistBtn,
+.watchedBtn {
+    background-color: #f0f0f0;
+    color: black;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.watchlistBtn:hover,
+.watchedBtn:hover {
+    background-color: #e0e0e0;
+}
+
+.list {
+  list-style-type: none;
+}
